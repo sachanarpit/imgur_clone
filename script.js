@@ -4,16 +4,17 @@ let imageDiv = document.getElementById("imageDiv");
 
 function getPage() {
   count++;
+  console.log(count);
   fetchImage(count);
 }
 
 async function fetchImage(count) {
-  const api = "https://alpha-meme-maker.herokuapp.com/";
+  const api = "https://picsum.photos/v2/list?limit=10&page=";
   let res = await fetch(api + count);
   let fi = await res.json();
-  let data = fi.data;
-  console.log("data:", data);
-  data.forEach(({ ID, bottomText, image, name, rank, tags, topText }) => {
+  let data = fi;
+  // console.log("data:", data);
+  data.forEach(({ id, author, url, download_url, width, height }) => {
     let div = document.createElement("div");
     div.setAttribute("class", "flex col-auto");
     div.innerHTML = `<div
@@ -32,7 +33,7 @@ async function fetchImage(count) {
           >
             <img
               class="cursor-pointer"
-              src=${image}
+              src=${download_url}
               alt="Sorry for that we can't able to get image"
             />
             <div class="flex mt-2 ml-2">
@@ -54,7 +55,7 @@ async function fetchImage(count) {
                       />
                     </svg>
                   </span>
-                  <span>${rank}</span>
+                  <span>${width}</span>
                 </div>
                 <div class="flex space-x-1">
                   <span>
@@ -79,7 +80,7 @@ async function fetchImage(count) {
                       />
                     </svg>
                   </span>
-                  <span>${ID}</span>
+                  <span>${id}</span>
                 </div>
                 <div class="flex space-x-1">
                   <span>
@@ -104,7 +105,7 @@ async function fetchImage(count) {
                       />
                     </svg>
                   </span>
-                  <span>${rank}</span>
+                  <span>${height}</span>
                 </div>
               </div>
             </div>
@@ -114,3 +115,13 @@ async function fetchImage(count) {
 }
 
 fetchImage(count);
+
+//infinte scroll
+
+window.addEventListener("scroll", () => {
+  const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
+
+  if (scrollTop + clientHeight >= scrollHeight) {
+    getPage();
+  }
+});
